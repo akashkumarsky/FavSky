@@ -1,0 +1,21 @@
+server:
+  port: 8077
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/ecommerce
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+razorpay:
+  api:
+    key: rzp_test_xMJRmOTeroL8dR
+    secret: LieoD1s9mxMIv569PcgRDMcU
+
+
