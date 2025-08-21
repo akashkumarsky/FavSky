@@ -59,7 +59,7 @@ const ProductsPage = () => {
       pageSize: 12,
       minPrice: searchParams.get('minPrice') || 0,
       maxPrice: searchParams.get('maxPrice') || 10000,
-      minDiscount: searchParams.get('discountPersent') || 0, // ✅ match ProductFilter field
+      minDiscount: searchParams.get('discountPercent') || 0, // ✅ match ProductFilter field
       stock: searchParams.get('stock') || '',
     };
     refetch(params);

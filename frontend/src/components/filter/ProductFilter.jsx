@@ -15,7 +15,7 @@ const ProductFilter = ({ onFilterChange }) => {
             size: params.getAll('size') || [],
             minPrice: params.get('minPrice') || '0',
             maxPrice: params.get('maxPrice') || '1000',
-            discountPersent: params.get('discountPersent') || '',
+            discountPercent: params.get('discountPercent') || '',
             sort: params.get('sort') || 'price_low',
         };
     };
@@ -49,7 +49,7 @@ const ProductFilter = ({ onFilterChange }) => {
     };
 
     const handleDiscountChange = (e) => {
-        setFilters({ ...filters, discountPersent: e.target.value });
+        setFilters({ ...filters, discountPercent: e.target.value });
     };
 
     const handleSortChange = (e) => {
@@ -64,7 +64,7 @@ const ProductFilter = ({ onFilterChange }) => {
             size: [],
             minPrice: '0',
             maxPrice: '1000',
-            discountPersent: '',
+            discountPercent: '',
             sort: 'price_low',
         };
         setFilters(defaultFilters);
@@ -157,9 +157,9 @@ const ProductFilter = ({ onFilterChange }) => {
                         {filterOptions.discounts.map((d) => (
                             <RadioInput
                                 key={d}
-                                name="discountPersent"
+                                name="discountPercent"
                                 value={d}
-                                checked={filters.discountPersent === String(d)}
+                                checked={filters.discountPercent === String(d)}
                                 onChange={handleDiscountChange}
                                 label={`${d}% and above`}
                             />
