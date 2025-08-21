@@ -10,5 +10,7 @@ public interface PaymentService {
     public String createPaymentLink(Order order) throws RazorpayException, OrderException;
     
     public void updatePaymentInformation(String orderId, String paymentId) throws OrderException;
+
+    public void handlePaymentFailure(String orderId) throws OrderException;
     
 }

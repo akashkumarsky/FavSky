@@ -84,4 +84,17 @@ public class PaymentServiceImpl implements PaymentService {
 
         System.out.println("Payment information updated for Order ID: " + orderId + ", Payment ID: " + paymentId);
     }
+
+    @Override
+    public void handlePaymentFailure(String orderId) throws OrderException {
+        com.sky.ecommerce.model.Order order = orderRepository.findById(Long.valueOf(orderId))
+                .orElseThrow(() -> new OrderException("Order not found with id: " + orderId));
+
+        order.getPaymentDetails().setStatus(PaymentStatus.valueOf("FAILED"));
+        order.setOrderStatus(OrderStatus.valueOf("PAYMENT_FAILED"));
+
+        orderRepository.save(order);
+
+        System.out.println("Payment failed for Order ID: " + orderId);
+    }
 }

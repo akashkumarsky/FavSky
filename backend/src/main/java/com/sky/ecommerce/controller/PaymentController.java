@@ -57,4 +57,14 @@ public class PaymentController {
             throw new OrderException(e.getMessage());
         }
     }
+
+    @GetMapping("/payments/failure")
+    public ResponseEntity<ApiResponse> paymentFailure(@RequestParam(name = "order_id") String orderId) throws OrderException {
+        try {
+            paymentService.handlePaymentFailure(orderId);
+            return new ResponseEntity<ApiResponse>(new ApiResponse("Payment failed", false), HttpStatus.OK);
+        } catch (Exception e) {
+            throw new OrderException(e.getMessage());
+        }
+    }
 }

@@ -62,5 +62,10 @@ public class OrderController {
         return new ResponseEntity<>(orders,HttpStatus.ACCEPTED);
     }
 
-}
+    @GetMapping("/{orderId}/total-price")
+    public ResponseEntity<Double> getOrderTotalPrice(@PathVariable Long orderId) throws OrderException {
+        double totalPrice = orderService.calculateTotalPrice(orderId);
+        return new ResponseEntity<>(totalPrice, HttpStatus.OK);
+    }
 
+}

@@ -158,4 +158,10 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.deleteById(orderId);
 
     }
+
+    @Override
+    public Double calculateTotalPrice(Long orderId) throws OrderException {
+        Order order = findOrderById(orderId);
+        return order.getTotalPrice();
+    }
 }

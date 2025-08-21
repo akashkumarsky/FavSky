@@ -27,4 +27,6 @@ public interface OrderService {
     public List<Order>getAllOrders();
 
     public void deleteOrder(Long orderId) throws OrderException;
+
+    public Double calculateTotalPrice(Long orderId) throws OrderException;
 }

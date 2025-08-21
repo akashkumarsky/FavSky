@@ -25,38 +25,34 @@ public class UserProductController {
 
 
     @GetMapping("/products")
-    public ResponseEntity<Page<Product>> findProductByCategoryHandler(@RequestParam String category,
-                                                                      @RequestParam List<String> color, @RequestParam List<String> size, @RequestParam Integer minPrice,
-                                                                      @RequestParam Integer maxPrice, @RequestParam Integer minDiscount, @RequestParam String sort,
-                                                                      @RequestParam String stock, @RequestParam Integer pageNumber, @RequestParam Integer pageSize){
-
-
-        Page<Product> res= productService.getAllProduct(category, color, size, minPrice, maxPrice, minDiscount, sort,stock,pageNumber,pageSize);
-
-        System.out.println("complete products :");
-        System.out.println(res);
-        return new ResponseEntity<>(res, HttpStatus.ACCEPTED);
-
+    public ResponseEntity<Page<Product>> findProductByCategoryHandler(
+            @RequestParam(required = false) List<String> category,
+            @RequestParam(required = false) List<String> color, 
+            @RequestParam(required = false) List<String> size, 
+            @RequestParam(required = false) Integer minPrice,
+            @RequestParam(required = false) Integer maxPrice, 
+            @RequestParam(required = false) Integer minDiscount, 
+            @RequestParam(defaultValue = "price_low") String sort,
+            @RequestParam(required = false) String stock, 
+            @RequestParam(defaultValue = "0") Integer pageNumber, 
+            @RequestParam(defaultValue = "10") Integer pageSize
+    ){
+        Page<Product> res = productService.getAllProduct(category, color, size, minPrice, maxPrice, minDiscount, sort, stock, pageNumber, pageSize);
+        System.out.println("Complete products response sent.");
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
 
 
     @GetMapping("/products/id/{productId}")
     public ResponseEntity<Product> findProductByIdHandler(@PathVariable Long productId) throws ProductException {
-
         Product product=productService.findProductById(productId);
-
-
         return new ResponseEntity<Product>(product,HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/products/search")
     public ResponseEntity<List<Product>> searchProductHandler(@RequestParam String q){
-
         List<Product> products=productService.searchProduct(q);
-
         return new ResponseEntity<List<Product>>(products,HttpStatus.OK);
-
     }
 }
-

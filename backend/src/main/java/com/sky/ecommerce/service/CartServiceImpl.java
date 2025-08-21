@@ -5,6 +5,14 @@ import com.sky.ecommerce.model.Cart;
 import com.sky.ecommerce.model.CartItem;
 import com.sky.ecommerce.model.Product;
 import com.sky.ecommerce.model.User;
+import com.sky.ecommerce.exception.CartItemException;
+import com.sky.ecommerce.exception.ProductException;
+import com.sky.ecommerce.exception.UserException;
+import com.sky.ecommerce.model.Cart;
+import com.sky.ecommerce.model.CartItem;
+import com.sky.ecommerce.model.Product;
+import com.sky.ecommerce.model.User;
+import com.sky.ecommerce.repository.CartItemRepository;
 import com.sky.ecommerce.repository.CartRepository;
 import com.sky.ecommerce.request.AddItemRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +26,18 @@ public class CartServiceImpl implements CartService{
     private CartRepository cartRepository;
     private CartItemService cartItemService;
     private ProductService productService;
+    private CartItemRepository cartItemRepository;
+    private UserService userService;
 
 
     @Autowired
     public CartServiceImpl(CartRepository cartRepository,CartItemService cartItemService,
-                                     ProductService productService) {
+                           ProductService productService, CartItemRepository cartItemRepository, UserService userService) {
         this.cartRepository=cartRepository;
         this.productService=productService;
         this.cartItemService=cartItemService;
+        this.cartItemRepository = cartItemRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -59,7 +71,7 @@ public class CartServiceImpl implements CartService{
     }
 
     @Override
-    public CartItem addCartItem(Long userId, AddItemRequest req) throws ProductException {
+    public String addCartItem(Long userId, AddItemRequest req) throws ProductException {
         Cart cart=cartRepository.findByUserId(userId);
         Product product=productService.findProductById(req.getProductId());
 
@@ -79,11 +91,43 @@ public class CartServiceImpl implements CartService{
 
             CartItem createdCartItem=cartItemService.createCartItem(cartItem);
             cart.getCartItems().add(createdCartItem);
-            return createdCartItem;
         }
 
 
-        return isPresent;
+        return "Item Add To Cart";
+    }
+
+    @Override
+    public CartItem updateCartItem(Long userId, Long cartItemId, CartItem cartItem) throws CartItemException, UserException {
+        CartItem item=cartItemService.findCartItemById(cartItemId);
+        User user=userService.findUserById(item.getUserId());
+
+        if(user.getId().equals(userId)) {
+
+            item.setQuantity(cartItem.getQuantity());
+            item.setPrice(item.getQuantity()*item.getProduct().getPrice());
+            item.setDiscountedPrice(item.getQuantity()*item.getProduct().getDiscountedPrice());
+
+            return cartItemRepository.save(item);
+        }
+        else {
+            throw new UserException("You can't update  another users cart_item");
+        }
+    }
+
+    @Override
+    public void removeCartItem(Long userId, Long cartItemId) throws CartItemException, UserException {
+        CartItem cartItem=cartItemService.findCartItemById(cartItemId);
+
+        User user=userService.findUserById(cartItem.getUserId());
+        User reqUser=userService.findUserById(userId);
+
+        if(user.getId().equals(reqUser.getId())) {
+            cartItemRepository.deleteById(cartItemId);
+        }
+        else {
+            throw new UserException("you can't remove another users item");
+        }
     }
 
 }

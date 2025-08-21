@@ -2,6 +2,7 @@ package com.sky.ecommerce.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,6 +14,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 public class AppConfig {
@@ -25,7 +27,11 @@ public class AppConfig {
                 .and()
                 // Authorization rules
                 .authorizeHttpRequests(authorize -> authorize
+                        // Allow public access to view products
+                        .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
+                        // Authenticate all other API requests
                         .requestMatchers("/api/**").authenticated()
+                        // Allow all other requests (like auth)
                         .anyRequest().permitAll()
                 )
                 // Add JWT validation filter
@@ -35,8 +41,8 @@ public class AppConfig {
                 // Enable CORS
                 .cors().configurationSource(corsConfigurationSource())
                 .and()
-                // Enable HTTP Basic authentication
-                .httpBasic();
+                // Disable HTTP Basic authentication (as we are using JWT)
+                .httpBasic().disable();
 
         return http.build();
     }
@@ -44,15 +50,18 @@ public class AppConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Allowed origins (customize for production)
+        // Allowed origins (added your frontend's origin)
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:3000",
-                "http://localhost:4000"
+                "http://localhost:4000",
+                "http://localhost:5173" 
         ));
         // Allow specific HTTP methods
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(Collections.singletonList("*"));
         // Allow all headers
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedHeaders(Collections.singletonList("*"));
+        // Allow credentials
+        configuration.setAllowCredentials(true);
         // Expose specific headers (e.g., Authorization)
         configuration.setExposedHeaders(Arrays.asList("Authorization"));
         // Cache pre-flight requests for 1 hour
