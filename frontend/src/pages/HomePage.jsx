@@ -9,14 +9,14 @@ import Footer from '../components/layout/Footer';
 const HomePage = () => {
     return (
         <div className="bg-gray-50 font-sans">
-            <Header />
+
             <main>
                 <HeroSection />
                 <FeaturedProducts />
                 <CategoriesSection />
                 <Newsletter />
             </main>
-            <Footer />
+
         </div>
     );
 };

@@ -2,7 +2,7 @@ package com.sky.ecommerce.response;
 
 public class AuthResponse {
     private String jwt;
-
+    private String message;
     private boolean status;
 
     public AuthResponse() {
@@ -31,4 +31,11 @@ public class AuthResponse {
         this.status = status;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }

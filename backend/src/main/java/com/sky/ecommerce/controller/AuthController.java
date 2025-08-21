@@ -8,6 +8,8 @@ import com.sky.ecommerce.request.LoginRequest;
 import com.sky.ecommerce.response.AuthResponse;
 import com.sky.ecommerce.service.CartService;
 
+import java.time.LocalDateTime;
+
 import com.sky.ecommerce.service.CustomeUserDetails;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -48,7 +50,7 @@ public class AuthController {
         String password = user.getPassword();
         String firstName=user.getFirstName();
         String lastName=user.getLastName();
-        String role=user.getRole();
+        String mobile=user.getMobile();
 
         User isEmailExist=userRepository.findByEmail(email);
 
@@ -63,8 +65,10 @@ public class AuthController {
         createdUser.setEmail(email);
         createdUser.setFirstName(firstName);
         createdUser.setLastName(lastName);
+        createdUser.setMobile(mobile);
         createdUser.setPassword(passwordEncoder.encode(password));
-        createdUser.setRole(role);
+        createdUser.setRole("ROLE_CUSTOMER");
+        createdUser.setCreatedAt(LocalDateTime.now());
 
         User savedUser= userRepository.save(createdUser);
 
@@ -76,8 +80,8 @@ public class AuthController {
         String token = jwtTokenProvider.generateToken(authentication);
 
         AuthResponse authResponse= new AuthResponse(token,true);
-
-        return new ResponseEntity<AuthResponse>(authResponse,HttpStatus.OK);
+authResponse.setMessage("Signup Success");
+        return new ResponseEntity<AuthResponse>(authResponse,HttpStatus.CREATED);
 
     }
 

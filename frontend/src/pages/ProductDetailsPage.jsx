@@ -1,21 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { addItemToCart } from '../redux/cart/cartSlice';
 import Header from '../components/layout/Header';
+
 import Footer from '../components/layout/Footer';
 import Button from '../components/common/Button';
 import ProductService from '../services/productService';
 import useApi from '../hooks/useApi';
-import { formatPrice } from '../utils/formatters';
+import { formatCurrency } from '../utils/formatters';
 
 const ProductDetailsPage = () => {
     const { id } = useParams();
-    const { data: product, loading, error, refetch } = useApi(() => ProductService.getProductById(id));
+    const apiFunc = useCallback(() => ProductService.getProductById(id), [id]);
+    const { data: product, loading, error, refetch } = useApi(apiFunc);
     const [selectedSize, setSelectedSize] = useState('');
     const [quantity, setQuantity] = useState(1);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         refetch();
     }, [id, refetch]);
+
 
     const handleSizeSelect = (size) => {
         setSelectedSize(size);
@@ -31,8 +37,14 @@ const ProductDetailsPage = () => {
             return;
         }
         // Implement add to cart logic here
-        console.log(`Added to cart: ${product.title}, Size: ${selectedSize}, Quantity: ${quantity}`);
+        const cartItem = {
+            product,
+            size: selectedSize,
+            quantity,
+        };
+        dispatch(addItemToCart(cartItem));
     };
+
 
     if (loading) {
         return <p className="text-center text-gray-500">Loading product details...</p>;
@@ -48,7 +60,6 @@ const ProductDetailsPage = () => {
 
     return (
         <div>
-            <Header />
             <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid md:grid-cols-2 gap-8">
                     {/* Product Image Gallery */}
@@ -67,10 +78,10 @@ const ProductDetailsPage = () => {
 
                         <div className="flex items-center mb-4">
                             <p className="text-2xl font-bold text-pink-600 mr-2">
-                                {formatPrice(product.discountedPrice)}
+                                {formatCurrency(product.discountedPrice)}
                             </p>
                             <p className="text-lg text-gray-400 line-through">
-                                {formatPrice(product.price)}
+                                {formatCurrency(product.price)}
                             </p>
                         </div>
 
@@ -122,7 +133,7 @@ const ProductDetailsPage = () => {
                     </div>
                 </div>
             </main>
-            <Footer />
+
         </div>
     );
 };

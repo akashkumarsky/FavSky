@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Navbar from './Navbar'; // Import the Navbar component
+import SideCart from '../cart/SideCart'; // Import the SideCart component
 
 // Helper component for SVG icons
 const Icon = ({ path, className = "w-6 h-6" }) => (
@@ -16,6 +17,12 @@ const ShoppingBagIcon = () => <Icon path="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5
 
 
 const Header = () => {
+    const [isCartOpen, setIsCartOpen] = useState(false);
+
+    const handleCartToggle = () => {
+        setIsCartOpen(!isCartOpen);
+    };
+
     return (
         <header className="bg-white shadow-md sticky top-0 z-50">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -31,13 +38,14 @@ const Header = () => {
                         <button className="text-gray-600 hover:text-gray-800 hidden sm:block"><SearchIcon /></button>
                         <button className="text-gray-600 hover:text-gray-800"><UserIcon /></button>
                         <button className="text-gray-600 hover:text-gray-800"><HeartIcon /></button>
-                        <button className="relative text-gray-600 hover:text-gray-800">
+                        <button className="relative text-gray-600 hover:text-gray-800" onClick={handleCartToggle}>
                             <ShoppingBagIcon />
                             <span className="absolute -top-2 -right-2 bg-indigo-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
                         </button>
                     </div>
                 </div>
             </div>
+            {isCartOpen && <SideCart onClose={handleCartToggle} />}
         </header>
     );
 };
