@@ -1,3 +1,4 @@
+// src/services/authService.js
 import api from './api';
 
 const AuthService = {
@@ -5,9 +6,16 @@ const AuthService = {
   login: async (email, password) => {
     try {
       const response = await api.post('/auth/signin', { email, password });
-      if (response.data.jwt) {
-        localStorage.setItem('jwt', response.data.jwt);
+      const { jwt, user } = response.data;
+
+      // ✅ Only save if values exist
+      if (jwt) {
+        localStorage.setItem('jwt', jwt);
       }
+      if (user) {
+        localStorage.setItem('user', JSON.stringify(user));
+      }
+
       return response.data;
     } catch (error) {
       console.error('Error during login:', error);
@@ -19,9 +27,16 @@ const AuthService = {
   signup: async (userData) => {
     try {
       const response = await api.post('/auth/signup', userData);
-      if (response.data.jwt) {
-        localStorage.setItem('jwt', response.data.jwt);
+      const { jwt, user } = response.data;
+
+      // ✅ Only save if values exist
+      if (jwt) {
+        localStorage.setItem('jwt', jwt);
       }
+      if (user) {
+        localStorage.setItem('user', JSON.stringify(user));
+      }
+
       return response.data;
     } catch (error) {
       console.error('Error during signup:', error);
@@ -32,6 +47,7 @@ const AuthService = {
   // Function to handle user logout
   logout: () => {
     localStorage.removeItem('jwt');
+    localStorage.removeItem('user');
   },
 
   // Function to get the current user's profile

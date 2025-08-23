@@ -27,12 +27,11 @@ public class AppConfig {
                 .and()
                 // Authorization rules
                 .authorizeHttpRequests(authorize -> authorize
-                        // Allow public access to view products
+                        // Allow public access to authentication and product endpoints
+                        .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
-                        // Authenticate all other API requests
-                        .requestMatchers("/api/**").authenticated()
-                        // Allow all other requests (like auth)
-                        .anyRequest().permitAll()
+                        // Secure all other requests
+                        .anyRequest().authenticated()
                 )
                 // Add JWT validation filter
                 .addFilterBefore(new JwtValidator(), BasicAuthenticationFilter.class)

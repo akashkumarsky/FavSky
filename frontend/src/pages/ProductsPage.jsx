@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Header from '../components/layout/Header';
-import Footer from '../components/layout/Footer';
 import ProductList from '../components/products/ProductList';
 import ProductFilter from '../components/filter/ProductFilter';
 import Pagination from '../components/common/Pagination';
