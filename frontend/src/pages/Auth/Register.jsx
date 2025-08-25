@@ -21,7 +21,7 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(null); // Clear previous errors
+        setError(null);
 
         if (formData.password !== formData.confirmPassword) {
             setError("Passwords do not match.");
@@ -29,7 +29,6 @@ const Register = () => {
         }
 
         try {
-            // We don't send confirmPassword to the backend
             const { confirmPassword, ...registerData } = formData;
             await register(registerData);
             navigate("/");
@@ -40,124 +39,146 @@ const Register = () => {
     };
 
     return (
-        <div className="flex justify-center items-center h-screen">
-            <div className="w-full max-w-md">
-                <form
-                    onSubmit={handleSubmit}
-                    className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-                >
-                    {error && <p className="text-red-500 text-xs italic mb-4">{error}</p>}
-                    <div className="mb-4">
-                        <label
-                            className="block text-gray-700 text-sm font-bold mb-2"
-                            htmlFor="firstName"
-                        >
-                            First Name
-                        </label>
-                        <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            id="firstName"
-                            type="text"
-                            placeholder="First Name"
-                            onChange={handleChange}
-                            required
-                        />
+        <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-purple-100 to-pink-100">
+            <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
+                <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+                    Create Your Account
+                </h2>
+
+                {error && (
+                    <p className="text-red-500 text-sm font-medium mb-4 text-center">
+                        {error}
+                    </p>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    {/* First + Last Name in same row */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label
+                                htmlFor="firstName"
+                                className="block text-sm font-semibold text-gray-700 mb-1"
+                            >
+                                First Name
+                            </label>
+                            <input
+                                id="firstName"
+                                type="text"
+                                placeholder="John"
+                                onChange={handleChange}
+                                required
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-400 focus:outline-none"
+                            />
+                        </div>
+                        <div>
+                            <label
+                                htmlFor="lastName"
+                                className="block text-sm font-semibold text-gray-700 mb-1"
+                            >
+                                Last Name
+                            </label>
+                            <input
+                                id="lastName"
+                                type="text"
+                                placeholder="Doe"
+                                onChange={handleChange}
+                                required
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-400 focus:outline-none"
+                            />
+                        </div>
                     </div>
-                    <div className="mb-4">
+
+                    {/* Email */}
+                    <div>
                         <label
-                            className="block text-gray-700 text-sm font-bold mb-2"
-                            htmlFor="lastName"
-                        >
-                            Last Name
-                        </label>
-                        <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            id="lastName"
-                            type="text"
-                            placeholder="Last Name"
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label
-                            className="block text-gray-700 text-sm font-bold mb-2"
                             htmlFor="email"
+                            className="block text-sm font-semibold text-gray-700 mb-1"
                         >
                             Email
                         </label>
                         <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             id="email"
                             type="email"
-                            placeholder="Email"
+                            placeholder="you@example.com"
                             onChange={handleChange}
                             required
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-400 focus:outline-none"
                         />
                     </div>
-                    <div className="mb-4">
+
+                    {/* Mobile */}
+                    <div>
                         <label
-                            className="block text-gray-700 text-sm font-bold mb-2"
                             htmlFor="mobile"
+                            className="block text-sm font-semibold text-gray-700 mb-1"
                         >
                             Mobile Number
                         </label>
                         <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             id="mobile"
                             type="tel"
-                            placeholder="Mobile Number"
+                            placeholder="123-456-7890"
                             onChange={handleChange}
                             required
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-400 focus:outline-none"
                         />
                     </div>
-                    <div className="mb-4">
+
+                    {/* Password */}
+                    <div>
                         <label
-                            className="block text-gray-700 text-sm font-bold mb-2"
                             htmlFor="password"
+                            className="block text-sm font-semibold text-gray-700 mb-1"
                         >
                             Password
                         </label>
                         <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                             id="password"
                             type="password"
-                            placeholder="******************"
+                            placeholder="********"
                             onChange={handleChange}
                             required
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-400 focus:outline-none"
                         />
                     </div>
-                    <div className="mb-6">
+
+                    {/* Confirm Password */}
+                    <div>
                         <label
-                            className="block text-gray-700 text-sm font-bold mb-2"
                             htmlFor="confirmPassword"
+                            className="block text-sm font-semibold text-gray-700 mb-1"
                         >
                             Confirm Password
                         </label>
                         <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                             id="confirmPassword"
                             type="password"
-                            placeholder="******************"
+                            placeholder="********"
                             onChange={handleChange}
                             required
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-400 focus:outline-none"
                         />
                     </div>
-                    <div className="flex items-center justify-between">
-                        <button
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                            type="submit"
-                        >
-                            Register
-                        </button>
-                        <Link
-                            className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
-                            to="/login"
-                        >
-                            Already have an account?
-                        </Link>
-                    </div>
+
+                    {/* Submit */}
+                    <button
+                        type="submit"
+                        className="w-full py-2 mt-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-lg shadow-md hover:from-purple-600 hover:to-pink-600 transition-all"
+                    >
+                        Register
+                    </button>
                 </form>
+
+                {/* Link */}
+                <p className="mt-6 text-center text-sm text-gray-600">
+                    Already have an account?{" "}
+                    <Link
+                        to="/login"
+                        className="text-purple-600 font-semibold hover:underline"
+                    >
+                        Login
+                    </Link>
+                </p>
             </div>
         </div>
     );
