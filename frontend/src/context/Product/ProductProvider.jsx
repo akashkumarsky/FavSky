@@ -1,18 +1,25 @@
-import { useState, useEffect, createContext } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import api from '../../config/api';
 import { ProductContext } from './ProductContext';
 
 export const ProductProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
+  const [pagination, setPagination] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const location = useLocation();
 
-  const getProducts = async () => {
+  const getProducts = async (params) => {
     try {
       setLoading(true);
-      const response = await api.get('/api/products');
-      // The backend returns a paginated response, the products are in `response.data.content`
+      const response = await api.get('/api/products', { params });
       setProducts(response.data.content);
+      setPagination({
+        totalPages: response.data.totalPages,
+        totalElements: response.data.totalElements,
+        currentPage: response.data.number,
+      });
       setError(null);
     } catch (err) {
       setError(err);
@@ -23,11 +30,18 @@ export const ProductProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    getProducts();
-  }, []);
+    const searchParams = new URLSearchParams(location.search);
+    const params = Object.fromEntries(searchParams.entries());
+
+    // Convert 1-based page from URL to 0-based for the API call
+    const pageNumber = parseInt(params.pageNumber) || 1;
+    params.pageNumber = pageNumber > 0 ? pageNumber - 1 : 0;
+
+    getProducts(params);
+  }, [location.search]);
 
   return (
-    <ProductContext.Provider value={{ products, loading, error, getProducts }}>
+    <ProductContext.Provider value={{ products, pagination, loading, error }}>
       {children}
     </ProductContext.Provider>
   );

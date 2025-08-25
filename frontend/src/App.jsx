@@ -1,20 +1,17 @@
-import { BrowserRouter as Router } from "react-router-dom";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import CustomerRoutes from "./layouts/CustomerRoutes";
-
+import Header from './components/Header';
+import Footer from './components/Footer';
+import CustomerRoutes from './layouts/CustomerRoutes';
 
 function App() {
   return (
-    <Router>
-      <div className="flex flex-col min-h-screen">
-        <Header />
-        <main className="flex-grow">
-          <CustomerRoutes />
-        </main>
-        <Footer />
-      </div>
-    </Router>
+    // No Router component needed here anymore
+    <div className="flex flex-col min-h-screen">
+      <Header />
+      <main className="flex-grow">
+        <CustomerRoutes />
+      </main>
+      <Footer />
+    </div>
   );
 }
 

@@ -1,31 +1,56 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ProductContext } from '../../context/Product/ProductContext';
 import ProductCard from '../../components/ProductCard';
 import { filters, singleFilter } from './FilterData';
-import { Disclosure, Menu, Transition } from '@headlessui/react';
-import { FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid';
+import { Disclosure } from '@headlessui/react';
+import { MinusIcon, PlusIcon } from '@heroicons/react/20/solid';
+import Pagination from '../../components/Pagination';
 
 const Product = () => {
-    const { products, loading, error } = useContext(ProductContext);
+    const { products, pagination, loading } = useContext(ProductContext);
     const location = useLocation();
     const navigate = useNavigate();
 
+    const searchParams = new URLSearchParams(location.search);
+    // Read the 1-based index from the URL, default to page 1
+    const pageNumberFromUrl = parseInt(searchParams.get('pageNumber')) || 1;
+    // Convert to 0-based index for the component's `forcePage` prop
+    const currentPage = pageNumberFromUrl > 0 ? pageNumberFromUrl - 1 : 0;
+
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        if (!params.has('pageSize')) {
+            params.set('pageSize', '12');
+            navigate({ search: `?${params.toString()}` }, { replace: true });
+        }
+    }, []);
+
+    const handlePageChange = (event) => {
+        const searchParams = new URLSearchParams(location.search);
+        // Set the URL to be 1-based for user-friendliness
+        searchParams.set('pageNumber', event.selected + 1);
+        const query = searchParams.toString();
+        navigate({ search: `?${query}` });
+    };
+
+    // ... (handleFilter and handleRadioFilterChange remain the same) ...
     const handleFilter = (value, sectionId) => {
         const searchParams = new URLSearchParams(location.search);
         let filterValue = searchParams.getAll(sectionId);
 
-        if (filterValue.length > 0 && filterValue[0].split(",").includes(value)) {
-            filterValue = filterValue[0].split(",").filter((item) => item !== value);
+        if (filterValue.length > 0 && filterValue[0].split(',').includes(value)) {
+            filterValue = filterValue[0].split(',').filter((item) => item !== value);
             if (filterValue.length === 0) {
                 searchParams.delete(sectionId);
+            } else {
+                searchParams.set(sectionId, filterValue.join(','));
             }
         } else {
             filterValue.push(value);
+            searchParams.set(sectionId, filterValue.join(','));
         }
-        if (filterValue.length > 0) {
-            searchParams.set(sectionId, filterValue.join(","));
-        }
+        searchParams.set('pageNumber', 1); // Reset to first page
         const query = searchParams.toString();
         navigate({ search: `?${query}` });
     };
@@ -33,6 +58,7 @@ const Product = () => {
     const handleRadioFilterChange = (e, sectionId) => {
         const searchParams = new URLSearchParams(location.search);
         searchParams.set(sectionId, e.target.value);
+        searchParams.set('pageNumber', 1); // Reset to first page
         const query = searchParams.toString();
         navigate({ search: `?${query}` });
     };
@@ -134,21 +160,30 @@ const Product = () => {
                                     </Disclosure>
                                 ))}
                             </form>
-
-                            {/* Product grid */}
                             <div className="lg:col-span-3">
-                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                    {products.map((product) => (
-                                        <ProductCard key={product.id} product={product} />
-                                    ))}
-                                </div>
+                                {loading ? (
+                                    <p>Loading...</p>
+                                ) : (
+                                    <>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                            {products.map((product) => (
+                                                <ProductCard key={product.id} product={product} />
+                                            ))}
+                                        </div>
+                                        <Pagination
+                                            pageCount={pagination.totalPages}
+                                            onPageChange={handlePageChange}
+                                            forcePage={currentPage}
+                                        />
+                                    </>
+                                )}
                             </div>
                         </div>
                     </section>
                 </main>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default Product;
