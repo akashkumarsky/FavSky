@@ -53,7 +53,7 @@ public class AppConfig {
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:3000",
                 "http://localhost:4000",
-                "http://localhost:5173" 
+                "http://localhost:5173"
         ));
         // Allow specific HTTP methods
         configuration.setAllowedMethods(Collections.singletonList("*"));
