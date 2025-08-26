@@ -17,7 +17,7 @@ public interface ProductService {
 
     List<Product> getAllProducts();
 
-    Product findProductById(Long id) throws ProductException;
+    Product findProductById(Long id) throws ProductException; // Add this line
 
     List<Product> findProductByCategory(String category);
 

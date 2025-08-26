@@ -74,3 +74,23 @@ export const singleFilter = [
     ],
   },
 ];
+
+// New detailed size guide
+export const sizeGuide = {
+  // Sizes for tops like Shirts, T-Shirts, Kurtas
+  tops: [
+    { name: 'S', inStock: true },
+    { name: 'M', inStock: true },
+    { name: 'L', inStock: true },
+    { name: 'XL', inStock: true },
+    { name: 'XXL', inStock: false },
+  ],
+  // Sizes for bottoms like Jeans
+  bottoms: [
+    { name: '28', inStock: true },
+    { name: '30', inStock: true },
+    { name: '32', inStock: true },
+    { name: '34', inStock: true },
+    { name: '36', inStock: true },
+  ],
+};

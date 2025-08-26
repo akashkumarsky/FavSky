@@ -5,6 +5,7 @@ import { ProductContext } from './ProductContext';
 
 export const ProductProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
+  const [product, setProduct] = useState(null); // State for single product
   const [pagination, setPagination] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -29,11 +30,25 @@ export const ProductProvider = ({ children }) => {
     }
   };
 
+  // New function to find a single product by ID
+  const findProductById = async (productId) => {
+    try {
+      setLoading(true);
+      const { data } = await api.get(`/api/products/id/${productId}`);
+      setProduct(data);
+      setError(null);
+    } catch (err) {
+      setError(err);
+      console.error(`Error fetching product with id ${productId}:`, err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const params = Object.fromEntries(searchParams.entries());
 
-    // Convert 1-based page from URL to 0-based for the API call
     const pageNumber = parseInt(params.pageNumber) || 1;
     params.pageNumber = pageNumber > 0 ? pageNumber - 1 : 0;
 
@@ -41,7 +56,7 @@ export const ProductProvider = ({ children }) => {
   }, [location.search]);
 
   return (
-    <ProductContext.Provider value={{ products, pagination, loading, error }}>
+    <ProductContext.Provider value={{ products, product, pagination, loading, error, findProductById }}>
       {children}
     </ProductContext.Provider>
   );
