@@ -32,7 +32,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product createProduct(CreateProductRequest req) {
-        // Category logic remains the same...
         Category topLevel=categoryRepository.findByName(req.getTopLavelCategory());
         if(topLevel==null) {
             Category topLavelCategory=new Category();
@@ -72,8 +71,7 @@ public class ProductServiceImpl implements ProductService {
         product.setCreatedAt(LocalDateTime.now());
         return productRepository.save(product);
     }
-    
-    // other methods (delete, update, findById, etc.) remain the same...
+
     @Override
     public String deleteProduct(Long productId) throws ProductException {
         Product product = findProductById(productId);
@@ -117,18 +115,24 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> searchProduct(String query) {
         return productRepository.searchProduct(query);
     }
-    
+
     @Override
     public Page<Product> getAllProduct(List<String> categories, List<String> colors, List<String> sizes, Integer minPrice, Integer maxPrice, Integer minDiscount, String sort, String stock, Integer pageNumber, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         List<Product> products = productRepository.filterProducts(categories, minPrice, maxPrice, minDiscount, sort);
-        
+
         if (colors != null && !colors.isEmpty()) {
             products = products.stream()
                     .filter(p -> colors.stream().anyMatch(c -> c.equalsIgnoreCase(p.getColor())))
                     .collect(Collectors.toList());
         }
-        
+
+        if (sizes != null && !sizes.isEmpty()) {
+            products = products.stream()
+                    .filter(p -> p.getSizes().stream().anyMatch(s -> sizes.contains(s.getName())))
+                    .collect(Collectors.toList());
+        }
+
         if (stock != null) {
             if (stock.equals("in_stock")) {
                 products = products.stream().filter(p -> p.getQuantity() > 0).collect(Collectors.toList());
@@ -136,10 +140,10 @@ public class ProductServiceImpl implements ProductService {
                 products = products.stream().filter(p -> p.getQuantity() < 1).collect(Collectors.toList());
             }
         }
-        
+
         int startIndex = (int) pageable.getOffset();
         int endIndex = Math.min(startIndex + pageable.getPageSize(), products.size());
-        
+
         List<Product> pageContent = products.subList(startIndex, endIndex);
         return new PageImpl<>(pageContent, pageable, products.size());
     }

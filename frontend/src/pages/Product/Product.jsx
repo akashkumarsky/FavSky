@@ -50,15 +50,25 @@ const Product = () => {
             filterValue.push(value);
             searchParams.set(sectionId, filterValue.join(','));
         }
-        searchParams.set('pageNumber', 1); // Reset to first page
+        searchParams.set('pageNumber', 1);
         const query = searchParams.toString();
         navigate({ search: `?${query}` });
     };
 
     const handleRadioFilterChange = (e, sectionId) => {
         const searchParams = new URLSearchParams(location.search);
-        searchParams.set(sectionId, e.target.value);
-        searchParams.set('pageNumber', 1); // Reset to first page
+
+        // Special handling for the price filter
+        if (sectionId === 'price') {
+            const [minPrice, maxPrice] = e.target.value.split('-').map(Number);
+            searchParams.set('minPrice', minPrice);
+            searchParams.set('maxPrice', maxPrice);
+        } else {
+            // For all other single-select filters
+            searchParams.set(sectionId, e.target.value);
+        }
+
+        searchParams.set('pageNumber', 1);
         const query = searchParams.toString();
         navigate({ search: `?${query}` });
     };
