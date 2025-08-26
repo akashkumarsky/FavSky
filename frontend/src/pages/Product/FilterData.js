@@ -15,9 +15,9 @@ export const filters = [
     id: 'category',
     name: 'Category',
     options: [
-      { value: 'T-Shirts', label: 'T-Shirts' },
-      { value: 'Jeans', label: 'Jeans' },
-      { value: 'Dresses', label: 'Dresses' },
+      { value: 'top', label: 'Top' },
+      { value: 'men_jeans', label: 'Jeans' },
+      { value: 'Women', label: 'Dresses' },
     ],
   },
   {

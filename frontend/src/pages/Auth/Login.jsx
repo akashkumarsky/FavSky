@@ -10,64 +10,79 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await login({ email, password });
-        navigate("/");
+        try {
+            await login({ email, password });
+            navigate("/");
+        } catch (err) {
+            console.error("Login failed:", err);
+        }
     };
 
     return (
-        <div className="flex justify-center items-center h-screen">
-            <div className="w-full max-w-md">
-                <form
-                    onSubmit={handleSubmit}
-                    className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-                >
-                    <div className="mb-4">
+        <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-purple-100 to-pink-100">
+            <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
+                <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+                    Welcome Back 👋
+                </h2>
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    {/* Email */}
+                    <div>
                         <label
-                            className="block text-gray-700 text-sm font-bold mb-2"
+                            className="block text-sm font-semibold text-gray-700 mb-1"
                             htmlFor="email"
                         >
                             Email
                         </label>
                         <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             id="email"
                             type="email"
-                            placeholder="Email"
+                            placeholder="you@example.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            required
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-400 focus:outline-none"
                         />
                     </div>
-                    <div className="mb-6">
+
+                    {/* Password */}
+                    <div>
                         <label
-                            className="block text-gray-700 text-sm font-bold mb-2"
+                            className="block text-sm font-semibold text-gray-700 mb-1"
                             htmlFor="password"
                         >
                             Password
                         </label>
                         <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                             id="password"
                             type="password"
-                            placeholder="******************"
+                            placeholder="********"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            required
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-400 focus:outline-none"
                         />
                     </div>
-                    <div className="flex items-center justify-between">
-                        <button
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                            type="submit"
-                        >
-                            Sign In
-                        </button>
-                        <Link
-                            className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
-                            to="/register"
-                        >
-                            Don't have an account?
-                        </Link>
-                    </div>
+
+                    {/* Submit */}
+                    <button
+                        type="submit"
+                        className="w-full py-2 mt-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-lg shadow-md hover:from-purple-600 hover:to-pink-600 transition-all"
+                    >
+                        Sign In
+                    </button>
                 </form>
+
+                {/* Register Link */}
+                <p className="mt-6 text-center text-sm text-gray-600">
+                    Don’t have an account?{" "}
+                    <Link
+                        to="/register"
+                        className="text-purple-600 font-semibold hover:underline"
+                    >
+                        Register
+                    </Link>
+                </p>
             </div>
         </div>
     );
