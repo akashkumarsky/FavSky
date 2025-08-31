@@ -1,16 +1,17 @@
 import Header from './components/Header';
 import Footer from './components/Footer';
 import CustomerRoutes from './layouts/CustomerRoutes';
+import SideCart from './components/SideCart'; // Import the SideCart
 
 function App() {
   return (
-    // No Router component needed here anymore
     <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex-grow">
         <CustomerRoutes />
       </main>
       <Footer />
+      <SideCart /> {/* Render the SideCart here */}
     </div>
   );
 }

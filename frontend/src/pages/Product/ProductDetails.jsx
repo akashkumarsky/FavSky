@@ -1,12 +1,14 @@
 import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { ProductContext } from '../../context/Product/ProductContext';
+import { CartContext } from '../../context/Cart/CartContext';
 import { Star } from 'lucide-react';
-import { sizeGuide } from './FilterData'; // Import the new size guide
+import { sizeGuide } from './FilterData';
 
 const ProductDetails = () => {
     const { productId } = useParams();
     const { product, findProductById, loading } = useContext(ProductContext);
+    const { addItemToCart } = useContext(CartContext);
     const [selectedSize, setSelectedSize] = useState('');
 
     useEffect(() => {
@@ -17,20 +19,22 @@ const ProductDetails = () => {
 
     const handleAddToCart = () => {
         if (selectedSize) {
-            console.log("Added to cart:", { product, size: selectedSize });
-            // Here you would typically call a function from a CartContext
+            const itemData = {
+                productId: product.id,
+                size: selectedSize,
+                quantity: 1,
+            };
+            addItemToCart(itemData);
         } else {
             alert("Please select a size.");
         }
     };
 
-    // Determine which size set to use based on the product's category
     const getSizesForCategory = (categoryName) => {
         const category = categoryName?.toLowerCase();
         if (category.includes('jean')) {
             return sizeGuide.bottoms;
         }
-        // Default to 'tops' sizes for shirts, t-shirts, etc.
         return sizeGuide.tops;
     };
 

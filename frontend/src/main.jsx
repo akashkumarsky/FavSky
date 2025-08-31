@@ -5,15 +5,18 @@ import App from './App.jsx';
 import './index.css';
 import { AuthProvider } from './context/Auth/AuthProvider.jsx';
 import { ProductProvider } from './context/Product/ProductProvider.jsx';
+import { CartProvider } from './context/Cart/CartProvider.jsx'; // Import CartProvider
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <Router> {/* Add Router here */}
+    <Router>
       <AuthProvider>
         <ProductProvider>
-          <App />
+          <CartProvider> {/* Add CartProvider here */}
+            <App />
+          </CartProvider>
         </ProductProvider>
       </AuthProvider>
-    </Router> {/* And close it here */}
+    </Router>
   </React.StrictMode>
 );
